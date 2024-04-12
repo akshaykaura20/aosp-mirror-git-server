@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  git-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USERNAME_ARG: ${USERNAME}
+        PASSWORD_ARG: ${PASSWORD}
+    environment:
+      - USERNAME=${USERNAME}
+      - PASSWORD=${PASSWORD}
+    ports:
+      - "80:80"
+    volumes:
+      - /var/www/git:/usr/local/apache2/htdocs
