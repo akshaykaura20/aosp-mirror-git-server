@@ -36,8 +36,8 @@ error_exit() {
 
 set_working_directory() {
     mkdir -p aosp_mirror
-    cd aosp_mirror || error_exit "Failed to change directory to /export/<pvc-id>/aosp_mirror"
-    echo "Set working directory to /export/<pvc-id>/aosp_mirror"
+    cd aosp_mirror || error_exit "Failed to change directory to /var/www/"
+    echo "Set working directory to /var/www/"
 }
 
 # Function to initialize a new repo on local with mirror manifest
