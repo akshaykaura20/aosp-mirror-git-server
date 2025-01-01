@@ -13,4 +13,25 @@ services:
     ports:
       - "80:80"
     volumes:
-      - /var/www/git:/usr/local/apache2/htdocs
+      - /var/www:/usr/local/apache2/htdocs
+    # Resource limits matching host capabilities
+    deploy:
+      resources:
+        limits:
+          cpus: '15'  # Reserve 1 CPU for system
+          memory: 57G # Reserve 3GB for system
+        reservations:
+          cpus: '8'
+          memory: 32G
+    # System tuning
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    sysctls:
+      net.core.somaxconn: 65536
+      net.ipv4.tcp_max_syn_backlog: 65536
+      net.ipv4.tcp_fin_timeout: 30
+      net.ipv4.tcp_keepalive_time: 300
+    # Ensure container restarts automatically
+    restart: unless-stopped

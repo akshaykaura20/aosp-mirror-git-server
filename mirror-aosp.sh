@@ -6,33 +6,33 @@ error_exit() {
     exit 1
 }
 
-# Function to install necessary tools using microdnf
-install_dependencies() {
-    microdnf update -y || error_exit "Failed to update microdnf"
-    microdnf install -y python3 gnupg curl git || error_exit "Failed to install dependencies"
-    echo "Installed python3, gnupg, curl and git."
-}
+# # Function to install necessary tools using microdnf
+# install_dependencies() {
+#     microdnf update -y || error_exit "Failed to update microdnf"
+#     microdnf install -y python3 gnupg curl git || error_exit "Failed to install dependencies"
+#     echo "Installed python3, gnupg, curl and git."
+# }
 
-# Function to download and install the repo tool with signature verification
-install_repo_tool() {
-    REPO=$(mktemp /tmp/repo.XXXXXXXXX) || error_exit "Failed to create temp file for repo"
-    curl -o ${REPO} https://storage.googleapis.com/git-repo-downloads/repo || error_exit "Failed to download repo tool"
-    for server in hkps://keys.openpgp.org hkps://keyserver.ubuntu.com hkps://pgp.mit.edu; do 
-        gpg --keyserver $server --recv-key 8BB9AD793E8E6153AF0F9A4416530D5E920F5C65 && echo "Success with $server" && break; 
-    done || error_exit "Failed to receive GPG key"
-    curl -s https://storage.googleapis.com/git-repo-downloads/repo.asc | gpg --verify - ${REPO} || error_exit "Failed to verify repo tool"
-    install -m 755 ${REPO} /usr/bin/repo || error_exit "Failed to install repo tool"
-    echo "Installed repo tool."
-}
+# # Function to download and install the repo tool with signature verification
+# install_repo_tool() {
+#     REPO=$(mktemp /tmp/repo.XXXXXXXXX) || error_exit "Failed to create temp file for repo"
+#     curl -o ${REPO} https://storage.googleapis.com/git-repo-downloads/repo || error_exit "Failed to download repo tool"
+#     for server in hkps://keys.openpgp.org hkps://keyserver.ubuntu.com hkps://pgp.mit.edu; do 
+#         gpg --keyserver $server --recv-key 8BB9AD793E8E6153AF0F9A4416530D5E920F5C65 && echo "Success with $server" && break; 
+#     done || error_exit "Failed to receive GPG key"
+#     curl -s https://storage.googleapis.com/git-repo-downloads/repo.asc | gpg --verify - ${REPO} || error_exit "Failed to verify repo tool"
+#     install -m 755 ${REPO} /usr/bin/repo || error_exit "Failed to install repo tool"
+#     echo "Installed repo tool."
+# }
 
-# Function to configure git, mainly for as fast repo sync as possible
-configure_git() {
-    git config --global http.postBuffer 524288000
-    git config --global user.name "root"
-    git config --global user.email "root@email.com"
-    git config --global color.ui true
-    echo "Configured git."
-}
+# # Function to configure git, mainly for as fast repo sync as possible
+# configure_git() {
+#     git config --global http.postBuffer 524288000
+#     git config --global user.name "root"
+#     git config --global user.email "root@email.com"
+#     git config --global color.ui true
+#     echo "Configured git."
+# }
 
 set_working_directory() {
     mkdir -p aosp_mirror
@@ -44,6 +44,9 @@ set_working_directory() {
 initialise_new_repo() {
     echo "Downloading and initializing new repo with manifest..."
     repo init -u https://android.googlesource.com/mirror/manifest --mirror || error_exit "Failed to initialize repo with manifest"
+
+    echo "Removing unnecessary refs..."
+    repo forall -c "git for-each-ref --format '%(refname)' refs/changes/ | xargs -n1 git update-ref -d" || error_exit "Failed to remove unnecessary refs"
 }
 
 # Function to perform repo sync with Google's source
@@ -59,11 +62,14 @@ sync_mirror() {
 
     local status=${1:-updated}
     echo "Sync complete. Local AOSP mirror $status."
+
+    echo "Performing garbage collection..."
+    repo forall -c "git gc --aggressive --prune=all" || error_exit "Failed to perform garbage collection"
 }
 
-install_dependencies
-install_repo_tool
-configure_git
+# install_dependencies
+# install_repo_tool
+# configure_git
 set_working_directory
 
 # Check if .repo directory exists
