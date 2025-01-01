@@ -35,8 +35,8 @@ error_exit() {
 # }
 
 set_working_directory() {
-    mkdir -p aosp_mirror
-    cd aosp_mirror || error_exit "Failed to change directory to /var/www/"
+    mkdir -p mirror
+    cd mirror || error_exit "Failed to change directory to /var/www/"
     echo "Set working directory to /var/www/"
 }
 
