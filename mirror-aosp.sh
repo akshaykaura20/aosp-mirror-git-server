@@ -35,9 +35,9 @@ error_exit() {
 # }
 
 set_working_directory() {
-    mkdir -p mirror
-    cd mirror || error_exit "Failed to change directory to /var/www/"
-    echo "Set working directory to /var/www/"
+    mkdir -p /usr/local/apache2/htdocs/mirror
+    cd /usr/local/apache2/htdocs/mirror || error_exit "Failed to change directory to /usr/local/apache2/htdocs/mirror"
+    echo "Set working directory to /usr/local/apache2/htdocs/mirror"
 }
 
 # Function to initialize a new repo on local with mirror manifest

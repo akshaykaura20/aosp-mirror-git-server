@@ -1,6 +1,3 @@
-ARG USERNAME
-ARG PASSWORD
-
 # Use the official httpd image as base
 FROM httpd:2.4
 
@@ -11,6 +8,7 @@ RUN apt-get update -y && \
     curl \
     vim \
     git \
+    openssh-client \
     libapache2-mod-fcgid && \
     rm -rf /var/lib/apt/lists/*
 
