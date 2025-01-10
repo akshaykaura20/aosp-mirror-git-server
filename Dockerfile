@@ -19,12 +19,6 @@ RUN export REPO=$(mktemp /tmp/repo.XXXXXXXXX) && \
     curl -s https://storage.googleapis.com/git-repo-downloads/repo.asc | gpg --verify - ${REPO} && \
     install -m 755 ${REPO} /usr/bin/repo
 
-WORKDIR /usr/local/apache2
-# Copy the mirror-aosp script from the host machine to the desired location within the container
-RUN mkdir -p aosp_mirror_script
-COPY mirror-aosp.sh aosp_mirror_script/mirror-aosp.sh
-RUN chmod +x aosp_mirror_script/mirror-aosp.sh
-
 # Define the working directory for the container
 WORKDIR /usr/local/apache2/htdocs
 
@@ -35,8 +29,8 @@ RUN git config --system pack.threads "16" && \
     git config --system core.bigFileThreshold 16m && \
     git config --system pack.windowMemory "32g" && \
     git config --system pack.packSizeLimit "2g" && \
-    git config --system user.name "root" && \
-    git config --system user.email "root@email.com"
+    git config --system user.name "www-data" && \
+    git config --system user.email "www-data@email.com"
 
 # Copy extra configurations for apache throttling and git http server setup
 COPY apache-performance.conf /usr/local/apache2/conf/extra/
@@ -53,7 +47,8 @@ RUN htpasswd -bc /usr/local/apache2/htdocs/.htpasswd "$USERNAME" "$PASSWORD"
 # Provide permissions to Apache user for Git repository directory
 RUN chgrp -R www-data /usr/local/apache2/htdocs/* && \
     chown -R www-data:www-data /usr/local/apache2/htdocs/* && \
-    chmod -R 775 /usr/local/apache2/htdocs/*
+    chmod -R 775 /usr/local/apache2/htdocs/* && \
+    git config --system --add safe.directory '*'
 
 # Restart Apache
 RUN apachectl -k restart
