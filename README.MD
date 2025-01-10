@@ -1,8 +1,9 @@
 This repo contains all the files needed to create a containerised Apache Git HTTP server from scratch on a Linux host machine.
 
 ### Steps to setup Git server:
-1. Prepare host machine by running the host setup file
+1. Prepare host machine by running the host setup file as root:
     ``` bash
+        sudo chmod +x ./initial-host-setup.sh
         sudo ./initial-host-setup.sh
     ```
 2. Copy all of the below files to host machine's directory path: `/var/www/setup-scripts`:
@@ -10,6 +11,7 @@ This repo contains all the files needed to create a containerised Apache Git HTT
     - docker-compose.yaml
     - git-http.conf
     - apache-performance.conf
+    - apache-server-name.conf
     - mirror-aosp.sh
 3. Start the docker compose stack (and build image)
     ``` bash
