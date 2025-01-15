@@ -1,3 +1,7 @@
+# Define build arguments
+ARG USERNAME
+ARG PASSWORD
+
 # Use the official httpd image as base
 FROM httpd:2.4
 

@@ -4,6 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        USERNAME: ${USERNAME}
+        PASSWORD: ${PASSWORD}
     image: sdv-mirror-git-server-image:latest
     container_name: sdv-mirror-git-server
     environment:
