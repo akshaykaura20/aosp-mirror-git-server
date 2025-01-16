@@ -27,3 +27,7 @@ This repo contains all the files needed to create a containerised Apache Git HTT
     ``` bash
     sudo docker exec -it sdv-mirror-git-server bash -c "/var/www/setup-scripts/mirror-aosp.sh > /var/www/setup-scripts/mirror-aosp.log 2>&1"
     ```
+7. Create a cronjob (that runs every Monday at 3pm) on the host, which will exec into the `sdv-mirror-git-server container` and executes the `mirror-aosp.sh` script to update the mirror with google source. To do this, we append the below line into the `/etc/crontab` file. The cron is disabled by default due to "#" infront, remove that in case you want to enable it.
+    ``` bash
+    echo "#0 15 * * 1 root docker exec sdv-mirror-git-server /usr/local/apache2/htdocs/mirror-aosp.sh > /usr/local/apache2/htdocs/mirror-aosp.log 2>&1" | sudo tee -a /etc/crontab > /dev/null
+    ```
