@@ -1,0 +1,12 @@
+# Terraform State
+*.tfstate
+*.tfstate.backup
+
+# Credentials
+*.json  # Service account keys
+
+# Local Terraform Configuration
+.terraform/
+.terraform.lock.hcl
+*.local
+*.env
