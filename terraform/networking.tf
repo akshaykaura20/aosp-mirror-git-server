@@ -5,14 +5,14 @@
 # Create a VPC (compute network)
 resource "google_compute_network" "mirror_vpc" {
   name                    = "mirror-vpc"
-  auto_create_subnetworks = false  # we create our own subnet
+  auto_create_subnetworks = false # we create our own subnet
 }
 
 # Create a Private Subnet in the VPC
 resource "google_compute_subnetwork" "mirror_subnet" {
   name          = "mirror-subnet"
   network       = google_compute_network.mirror_vpc.id
-  ip_cidr_range = "10.0.1.0/24"  # private IP range
+  ip_cidr_range = "10.0.1.0/24" # private IP range
   region        = var.region
 }
 
@@ -21,12 +21,15 @@ resource "google_compute_subnetwork" "mirror_subnet" {
 #############################
 
 # Create a NAT Gateway (Allows Outbound Internet Access for Private VMs)
-resource "google_compute_router" "nat_router" {
-  name    = "nat-router"
+# First create a generic router for the VPC. 
+# It holds the NAT configuration but doesn't pass traffic by itself.
+resource "google_compute_router" "router" {
+  name    = "router"
   region  = var.region
   network = google_compute_network.mirror_vpc.id
 }
-
+# Create a NAT configuration on top of the router.
+# NAT config is defined here but stored in the router.
 resource "google_compute_router_nat" "nat" {
   name                               = "nat-config"
   router                             = google_compute_router.nat_router.name
@@ -46,10 +49,10 @@ resource "google_compute_firewall" "allow_http_https" {
 
   allow {
     protocol = "tcp"
-    ports    = ["80", "443"]  # HTTP, HTTPS
+    ports    = ["80", "443"] # HTTP, HTTPS
   }
 
-  source_ranges = ["0.0.0.0/0"]  # open to public
+  source_ranges = ["0.0.0.0/0"] # open to public
 }
 
 # Secure SSH Access (Only via IAP)
@@ -62,5 +65,5 @@ resource "google_compute_firewall" "allow_ssh_iap" {
     ports    = ["22"]
   }
 
-  source_ranges = ["35.235.240.0/20"]  # google's IAP range (secure access)
+  source_ranges = ["35.235.240.0/20"] # google's IAP range (secure access)
 }
