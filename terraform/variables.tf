@@ -1,5 +1,5 @@
 variable "project_id" {
-  default = "qwiklabs-gcp-00-f5d91a4d3c26" # prj-s-agbg-gcp-sdv-prod
+  default = "qwiklabs-gcp-03-05805bd2d501" # prj-s-agbg-gcp-sdv-prod
 }
 
 variable "region" {
@@ -7,5 +7,5 @@ variable "region" {
 }
 
 variable "credentials_file" {
-  default = "C:/Users/akshay.kaura/Downloads/qwiklabs-gcp-00-f5d91a4d3c26-44be5006f4bd.json" # Path to the service account JSON key
+  default = "C:/Users/akshay.kaura/Downloads/qwiklabs-gcp-03-05805bd2d501-434002b2680d.json" # Path to the service account JSON key
 }

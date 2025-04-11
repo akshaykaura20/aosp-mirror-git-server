@@ -60,6 +60,9 @@ resource "google_compute_health_check" "default" {
     port         = local.http_traffic.port
     request_path = local.health_check.path
   }
+  log_config {
+    enable = true
+  }
 }
 
 # Create a unmanaged instance group for the VM
@@ -71,7 +74,7 @@ resource "google_compute_instance_group" "mirror_lb_instance_group" {
   instances   = [google_compute_instance.mirror_vm.id]
 
   named_port {
-    name = local.http_traffic.port_name 
+    name = local.http_traffic.port_name
     port = local.http_traffic.port # change it to 443 for HTTPS (SSL)
   }
 
