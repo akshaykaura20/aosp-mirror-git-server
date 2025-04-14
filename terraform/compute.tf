@@ -23,6 +23,7 @@ resource "google_compute_instance" "mirror_vm" {
   # Install Apache & Git Automatically on Startup
   metadata_startup_script = <<EOT
     #!/bin/bash
+    exec > /var/log/startup-script.log 2>&1
     sudo apt update && sudo apt install -y apache2 git
     sudo systemctl enable --now apache2
     echo "Git Mirror is Ready!" | sudo tee /var/www/html/index.html

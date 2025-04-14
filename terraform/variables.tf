@@ -1,11 +1,22 @@
+variable "backend_bucket_name" {
+  description = "GCS bucket to store terraform state"
+  type        = string
+}
+
 variable "project_id" {
-  default = "qwiklabs-gcp-03-05805bd2d501" # prj-s-agbg-gcp-sdv-prod
+  description = "GCP project ID"
+  type        = string
+  # default     = "qwiklabs-gcp-03-05805bd2d501" prj-s-agbg-gcp-sdv-prod
 }
 
 variable "region" {
-  default = "us-central1"
+  description = "GCP region to deploy to"
+  type        = string
+  # default     = "us-central1"
 }
 
-variable "credentials_file" {
-  default = "C:/Users/akshay.kaura/Downloads/qwiklabs-gcp-03-05805bd2d501-434002b2680d.json" # Path to the service account JSON key
+variable "mirror_git_server_password" {
+  description = "Password for writing to the Git server"
+  type        = string
+  sensitive   = true
 }
