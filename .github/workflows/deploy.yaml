@@ -45,7 +45,16 @@ jobs:
       - name: VM Health Check post deployment
         run: |
           echo "Waiting for VM to boot and complete startup scripts..."
-          sleep 120
-          echo "Checking health endpoint..."
-          curl --fail http://${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}/health
+          for i in {1..10}; do
+            if curl --fail http://${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}/health; then
+              echo "VM is healthy!"
+              exit 0
+            else
+              echo "Attempt $i: VM Not healthy yet, retrying in 30s..."
+              sleep 30
+            fi
+          done
+          echo "VM failed to become healthy in time."
+          exit 1
+          
         
