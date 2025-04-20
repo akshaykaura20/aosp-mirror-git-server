@@ -37,13 +37,16 @@ RUN git config --system pack.threads "16" && \
     git config --system user.email "www-data@email.com"
 
 # Copy extra configurations for apache throttling and git http server setup
-COPY apache-performance.conf /usr/local/apache2/conf/extra/
-COPY apache-server-name.conf /usr/local/apache2/conf/extra/
-COPY git-http.conf /usr/local/apache2/conf/extra/
+COPY ./apache-config/apache-performance.conf /usr/local/apache2/conf/extra/
+COPY ./apache-config/apache-server-name.conf /usr/local/apache2/conf/extra/
+COPY ./apache-config/git-http.conf /usr/local/apache2/conf/extra/
+COPY ./apache-config/health.conf /usr/local/apache2/conf/extra/
 
 RUN echo "Include conf/extra/apache-performance.conf" >> /usr/local/apache2/conf/httpd.conf && \
     echo "Include conf/extra/apache-server-name.conf" >> /usr/local/apache2/conf/httpd.conf && \
-    echo "Include conf/extra/git-http.conf" >> /usr/local/apache2/conf/httpd.conf
+    echo "Include conf/extra/git-http.conf" >> /usr/local/apache2/conf/httpd.conf && \
+    echo "healthy" >> /usr/local/apache2/htdocs/health && \
+    echo "Include conf/extra/health.conf" >> /usr/local/apache2/conf/httpd.conf && \
 
 # Create a user in the password file
 RUN htpasswd -bc /usr/local/apache2/htdocs/.htpasswd "$USERNAME" "$PASSWORD"

@@ -15,18 +15,25 @@ resource "google_compute_instance" "mirror_vm" {
     }
   }
 
+  attached_disk {
+    source = google_compute_disk.aosp_mirror_disk.id
+    device_name = google_compute_disk.aosp_mirror_disk.name
+  }
+
   network_interface {
     network    = google_compute_network.mirror_vpc.id
     subnetwork = google_compute_subnetwork.mirror_subnet.id
   }
 
-  # Install Apache & Git Automatically on Startup
-  metadata_startup_script = <<EOT
-    #!/bin/bash
-    exec > /var/log/startup-script.log 2>&1
-    sudo apt update && sudo apt install -y apache2 git
-    sudo systemctl enable --now apache2
-    echo "Git Mirror is Ready!" | sudo tee /var/www/html/index.html
-    echo "Healthy" | sudo tee /var/www/html/health
-  EOT
+  metadata_startup_script = templatefile("${path.module}/scripts/startup.sh", {
+    gh_repo = "${var.gh_repo}",
+    lb_static_ip = "${var.google_compute_global_address.mirror_lb_public_ip.address}"
+  })
+}
+
+# Provide the access to read secrets for the SA used by Compute Instance
+resource "google_project_iam_member" "allow_mirror_vm_to_read_secrets" {
+  project = var.project_id
+  role   = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:sdv-public-aosp-mirror-git-sa@${var.project_id}.iam.gserviceaccount.com"
 }

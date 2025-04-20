@@ -11,6 +11,8 @@ jobs:
       TF_VAR_backend_bucket_name: ${{ vars.GCP_BUCKET_NAME }}
       TF_VAR_project_id: ${{ vars.GCP_PROJECT_ID }}
       TF_VAR_region: ${{ vars.GCP_REGION }}
+      TF_VAR_gh_repo: "github.com/${{ github.repository }}.git"
+      TF_VAR_gh_repo_pat: ${{ secrets.GH_REPO_PAT }}
       TF_VAR_mirror_git_server_password: ${{ secrets.GIT_SERVER_PASSWORD }}
     steps:
       # Get the terraform code from this repo onto the runner
@@ -43,6 +45,8 @@ jobs:
           echo "mirror_lb_ip=$(terraform output -raw lb_static_ip)" >> "$GITHUB_OUTPUT"
 
       - name: VM Health Check post deployment
+        env:
+          MIRROR_LB_IP: ${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}
         run: |
           echo "Waiting for VM to boot and complete startup scripts..."
           for i in {1..10}; do

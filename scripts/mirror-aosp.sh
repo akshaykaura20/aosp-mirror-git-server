@@ -1,15 +1,19 @@
 #!/bin/bash
 
+set -e
+
 # Function to check for errors and exit the script
 error_exit() {
-    echo "Error: $1" >&2
+    echo "[ERROR]: $1" >&2
     exit 1
 }
 
+MIRROR_DIR_PATH="/usr/local/apache2/htdocs/mirror"
+
 set_working_directory() {
-    mkdir -p /usr/local/apache2/htdocs/mirror
-    cd /usr/local/apache2/htdocs/mirror || error_exit "Failed to change directory to /usr/local/apache2/htdocs/mirror"
-    echo "Set working directory to /usr/local/apache2/htdocs/mirror"
+    mkdir -p $MIRROR_DIR_PATH
+    cd $MIRROR_DIR_PATH || error_exit "Failed to change directory to $MIRROR_DIR_PATH"
+    echo "Set working directory to $MIRROR_DIR_PATH"
 }
 
 # Function to initialize a new repo on local with mirror manifest

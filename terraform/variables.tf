@@ -15,6 +15,17 @@ variable "region" {
   # default     = "us-central1"
 }
 
+variable "gh_repo" {
+  description = "Link to this repo used for cloning in scripts"
+  type        = string
+}
+
+variable "gh_repo_pat" {
+  description = "GitHub Personal Access Token used for cloning repo in scripts"
+  type        = string
+  sensitive   = true
+}
+
 variable "mirror_git_server_password" {
   description = "Password for writing to the Git server"
   type        = string

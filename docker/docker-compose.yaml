@@ -7,15 +7,22 @@ services:
       args:
         USERNAME: ${USERNAME}
         PASSWORD: ${PASSWORD}
-    image: sdv-mirror-git-server-image:latest
-    container_name: sdv-mirror-git-server
+    image: "${CONTAINER_NAME}-image:latest"
+    container_name: ${CONTAINER_NAME}
     environment:
       - USERNAME=${USERNAME}
       - PASSWORD=${PASSWORD}
     ports:
       - "80:80"
     volumes:
-      - /var/www:/usr/local/apache2/htdocs
+      - ${HOST_MIRROR_MOUNT_PATH}:/usr/local/apache2/htdocs
+      - ${HOST_MIRROR_SCRIPT_MOUNT_PATH}:/opt/internal/scripts # NOT served by apache
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     # Resource limits matching host capabilities
     deploy:
       resources:
