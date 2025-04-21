@@ -27,7 +27,7 @@ resource "google_compute_instance" "mirror_vm" {
 
   metadata_startup_script = templatefile("${path.module}/scripts/startup.sh", {
     gh_repo = "${var.gh_repo}",
-    lb_static_ip = "${var.google_compute_global_address.mirror_lb_public_ip.address}"
+    lb_static_ip = google_compute_global_address.mirror_lb_public_ip.address
   })
 }
 
