@@ -16,6 +16,8 @@ export GIT_SERVER_ADDRESS="${lb_static_ip}"
 ##########################################
 # GET REPO PAT AND CLONE REPO
 ##########################################
+# create repo dir
+mkdir -p $REPO_CLONE_PATH
 # fetch repo PAT secret from GCP
 GH_REPO_PAT=$(gcloud secrets versions access latest --secret=GH_REPO_PAT)
 

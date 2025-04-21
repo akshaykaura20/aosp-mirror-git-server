@@ -130,7 +130,7 @@ fi
 
 # Create necessary directories
 echo "Creating necessary directories..."
-mkdir -p {$REPO_CLONE_PATH,$MIRROR_PATH_INSIDE_DISK}
+mkdir -p $MIRROR_PATH_INSIDE_DISK
 
 ##########################################
 # GET SECRETS
