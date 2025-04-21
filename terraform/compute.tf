@@ -2,6 +2,19 @@
 # VM Configuration 
 #############################
 
+# Create SA used by Compute Instance
+resource "google_service_account" "vm_runtime_sa" {
+  account_id   = "mirror-vm-runtime-sa"
+  display_name = "SA for Mirror VM to access secrets"
+}
+
+# Provide the access to read secrets for the SA used by Compute Instance
+resource "google_project_iam_member" "allow_vm_sa_secret_access" {
+  project = var.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.vm_runtime_sa.email}"
+}
+
 # Create a Compute Instance for Git Mirror
 resource "google_compute_instance" "mirror_vm" {
   name         = "mirror-git-server"
@@ -24,16 +37,14 @@ resource "google_compute_instance" "mirror_vm" {
     network    = google_compute_network.mirror_vpc.id
     subnetwork = google_compute_subnetwork.mirror_subnet.id
   }
+  
+  service_account {
+    email  = google_service_account.vm_runtime_sa.email
+    scopes = ["cloud-platform"]
+  }
 
   metadata_startup_script = templatefile("${path.module}/../scripts/vm-init.sh", {
     gh_repo = "${var.gh_repo}",
     lb_static_ip = google_compute_global_address.mirror_lb_public_ip.address
   })
-}
-
-# Provide the access to read secrets for the SA used by Compute Instance
-resource "google_project_iam_member" "allow_mirror_vm_to_read_secrets" {
-  project = var.project_id
-  role   = "roles/secretmanager.secretAccessor"
-  member = "serviceAccount:sdv-public-aosp-mirror-git-sa@${var.project_id}.iam.gserviceaccount.com"
 }
