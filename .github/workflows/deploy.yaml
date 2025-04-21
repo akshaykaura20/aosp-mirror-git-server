@@ -28,7 +28,7 @@ jobs:
       # Initialise TF with remote backend
       - name: Terraform init
         working-directory: ./terraform
-        run: terraform init -backend-config="bucket='${{vars.GCP_BUCKET_NAME }}'"
+        run: terraform init -backend-config="bucket=${{vars.GCP_BUCKET_NAME }}"
 
       - name: Terraform plan
         working-directory: ./terraform
