@@ -22,7 +22,7 @@ GH_REPO_PAT=$(gcloud secrets versions access latest --secret=GH_REPO_PAT)
 # Clone AOSP Mirror Git server repo if not already exists
 if [ ! -d "$REPO_CLONE_PATH/.git" ]; then
   echo "Cloning AOSP Mirror Git server repo to access scripts..."
-  git clone "https://${GH_REPO_PAT}@${GH_REPO}" "$REPO_CLONE_PATH"
+  git clone "https://$GH_REPO_PAT@$GH_REPO" "$REPO_CLONE_PATH"
 else
   echo "Repo already cloned. Pulling latest changes..."
   git -C "$REPO_CLONE_PATH" pull
