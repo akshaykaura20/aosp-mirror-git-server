@@ -20,6 +20,7 @@ resource "google_compute_instance" "mirror_vm" {
   name         = "mirror-git-server"
   machine_type = "n1-standard-16" # 16 vCPUs, 60GB RAM
   zone         = "${var.region}-a"
+  allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
@@ -37,7 +38,7 @@ resource "google_compute_instance" "mirror_vm" {
     network    = google_compute_network.mirror_vpc.id
     subnetwork = google_compute_subnetwork.mirror_subnet.id
   }
-  
+
   service_account {
     email  = google_service_account.vm_runtime_sa.email
     scopes = ["cloud-platform"]
