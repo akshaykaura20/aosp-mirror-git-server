@@ -21,14 +21,12 @@ MIRROR_DISK_DEVICE="/dev/disk/by-id/aosp-mirror-disk"
 MIRROR_DISK_MOUNT_PATH="/var/www"
 MIRROR_PATH_INSIDE_DISK="/var/www/mirror"
 MIRROR_SCRIPT_PATH_INSIDE_DISK="$MIRROR_DISK_MOUNT_PATH/.internal/scripts"
-REPO_CLONE_PATH="/opt/git-server-configs"
+# using env var `REPO_CLONE_PATH="/opt/git-server-configs"` exported from vm-init.sh
 DOCKER_DIR_PATH="${REPO_CLONE_PATH}/docker"
-GH_REPO="${gh_repo}"
-GIT_SERVER_ADDRESS="${lb_static_ip}"
+# using env var `GIT_SERVER_ADDRESS="${lb_static_ip}"` exported from vm-init.sh
 GIT_SERVER_USERNAME="root"
 GIT_SERVER_CONTAINER_NAME="sdv-mirror-git-server"
 # secrets to fetch from GCP
-GH_REPO_PAT=""
 GIT_SERVER_PASSWORD=""
 
 ##########################################
@@ -135,19 +133,9 @@ echo "Creating necessary directories..."
 mkdir -p {$REPO_CLONE_PATH,$MIRROR_PATH_INSIDE_DISK}
 
 ##########################################
-# GET SECRETS AND CLONE REPO
+# GET SECRETS
 ##########################################
-GH_REPO_PAT=$(gcloud secrets versions access latest --secret=GH_REPO_PAT)
 GIT_SERVER_PASSWORD=$(gcloud secrets versions access latest --secret=GIT_SERVER_PASSWORD)
-
-# Clone AOSP Mirror Git server repo if not already exists
-if [ ! -d "$REPO_CLONE_PATH/.git" ]; then
-  echo "Cloning AOSP Mirror Git server repo to access scripts..."
-  git clone "https://${GH_REPO_PAT}@${GH_REPO}" "$REPO_CLONE_PATH"
-else
-  echo "Repo already cloned. Pulling latest changes..."
-  git -C "$REPO_CLONE_PATH" pull
-fi
 
 ##########################################
 # CONFIGURE GIT SERVER

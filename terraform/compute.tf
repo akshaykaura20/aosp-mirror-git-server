@@ -25,7 +25,7 @@ resource "google_compute_instance" "mirror_vm" {
     subnetwork = google_compute_subnetwork.mirror_subnet.id
   }
 
-  metadata_startup_script = templatefile("${path.module}/../scripts/startup.sh", {
+  metadata_startup_script = templatefile("${path.module}/../scripts/vm-init.sh", {
     gh_repo = "${var.gh_repo}",
     lb_static_ip = google_compute_global_address.mirror_lb_public_ip.address
   })
