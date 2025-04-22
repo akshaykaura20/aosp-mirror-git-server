@@ -8,7 +8,7 @@ error_exit() {
     exit 1
 }
 
-MIRROR_DIR_PATH="/usr/local/apache2/htdocs/mirror"
+MIRROR_DIR_PATH="/usr/local/apache2/htdocs"
 
 set_working_directory() {
     mkdir -p $MIRROR_DIR_PATH

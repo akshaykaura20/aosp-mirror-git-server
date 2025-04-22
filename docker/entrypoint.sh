@@ -9,7 +9,7 @@ CONTAINER_MIRROR_SCRIPT_MOUNT_PATH="/opt/internal/scripts/"
 echo "healthy" > "$CONTAINER_MIRROR_MOUNT_PATH/healthcheck"
 
 # Create a user in the password file
-htpasswd -bc $CONTAINER_MIRROR_MOUNT_PATH/.htpasswd "$USERNAME" "$PASSWORD"
+htpasswd -bc $CONTAINER_MIRROR_MOUNT_PATH/../conf/.htpasswd "$USERNAME" "$PASSWORD"
 
 # Provide permissions to Apache user for Git repository directory
 chgrp -R www-data $CONTAINER_MIRROR_MOUNT_PATH/*

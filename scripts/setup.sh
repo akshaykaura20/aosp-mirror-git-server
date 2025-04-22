@@ -182,7 +182,7 @@ cd "$REPO_CLONE_PATH/docker"
 sudo docker compose up --build -d
 
 # Wait for container healthy status
-MAX_CONTAINER_DISCOVERY_RETRY=60  # Wait up to 5 minutes (60 * 5s)
+MAX_CONTAINER_DISCOVERY_RETRY=120  # Wait up to 10 minutes (60 * 5s)
 CONTAINER_DISCOVERY_RETRY=0
 while true; do
   STATUS=$(docker inspect -f '{{.State.Health.Status}}' $GIT_SERVER_CONTAINER_NAME 2>/dev/null || echo "notfound")
