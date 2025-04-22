@@ -177,8 +177,6 @@ chmod 600 "$DOCKER_DIR_PATH/.env"
 ##########################################
 # START DOCKER COMPOSE GIT SERVER STACK
 ##########################################
-# Create /health path for apache container healthchecks- we do this inside disk so as to not get overridden by volume mount
-echo "healthy" > "$MIRROR_PATH_INSIDE_DISK/healthcheck"
 echo "[INFO] Starting docker-compose stack..."
 cd "$REPO_CLONE_PATH/docker"
 sudo docker compose up --build -d

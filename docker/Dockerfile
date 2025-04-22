@@ -45,19 +45,15 @@ COPY ./apache-config/healthcheck.conf /usr/local/apache2/conf/extra/
 RUN echo "Include conf/extra/apache-performance.conf" >> /usr/local/apache2/conf/httpd.conf && \
     echo "Include conf/extra/apache-server-name.conf" >> /usr/local/apache2/conf/httpd.conf && \
     echo "Include conf/extra/git-http.conf" >> /usr/local/apache2/conf/httpd.conf && \
-    echo "Include conf/extra/healthcheck.conf" >> /usr/local/apache2/conf/httpd.conf
-
-# Create a user in the password file
-RUN htpasswd -bc /usr/local/apache2/htdocs/.htpasswd "$USERNAME" "$PASSWORD"
-
-# Provide permissions to Apache user for Git repository directory
-RUN chgrp -R www-data /usr/local/apache2/htdocs/* && \
-    chown -R www-data:www-data /usr/local/apache2/htdocs/* && \
-    chmod -R 775 /usr/local/apache2/htdocs/* && \
+    echo "Include conf/extra/healthcheck.conf" >> /usr/local/apache2/conf/httpd.conf && \
     git config --system --add safe.directory '*'
 
-# Restart Apache
-RUN apachectl -k restart
+# Copy the entrypoint script and set permissions
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Set custom entrypoint (starts Apache after setup)
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Expose port 80
 EXPOSE 80
