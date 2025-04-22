@@ -13,7 +13,7 @@ locals {
   backend_service_timeout_sec = 30
 
   health_check = {
-    path               = "/health"
+    path               = "/healthcheck"
     check_interval_sec = 5
     timeout_sec        = 5
   }

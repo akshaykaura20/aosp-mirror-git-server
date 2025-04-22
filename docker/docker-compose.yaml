@@ -18,7 +18,7 @@ services:
       - ${HOST_MIRROR_MOUNT_PATH}:/usr/local/apache2/htdocs
       - ${HOST_MIRROR_SCRIPT_MOUNT_PATH}:/opt/internal/scripts # NOT served by apache
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      test: ["CMD", "curl", "-f", "http://localhost/healthcheck"]
       interval: 30s
       timeout: 10s
       retries: 3
