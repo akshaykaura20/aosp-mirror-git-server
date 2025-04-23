@@ -49,11 +49,11 @@ jobs:
           MIRROR_LB_IP: ${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}
         run: |
           echo "Waiting for VM to boot and complete startup scripts..."
-          MAX_SERVER_DISCOVERY_RETRY=120  # Wait up to 10 minutes (60 * 5s)
+          MAX_SERVER_DISCOVERY_RETRY=20  # Wait up to 10 minutes (20 * 30s)
           SERVER_DISCOVERY_RETRY=0
-          SLEEP_TIME=5
+          SLEEP_TIME=30
           while true; do
-            if curl --fail -v http://${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}/health; then
+            if curl --fail -v http://${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}/healthcheck; then
               echo "Server is healthy!"
               exit 0
             fi
