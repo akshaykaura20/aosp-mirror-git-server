@@ -55,6 +55,8 @@ resource "google_compute_health_check" "default" {
   name               = "git-server-health-check"
   check_interval_sec = local.health_check.check_interval_sec
   timeout_sec        = local.health_check.timeout_sec
+  healthy_threshold  = local.health_check.healthy_threshold
+  unhealthy_threshold = local.health_check.unhealthy_threshold
 
   http_health_check {
     port         = local.http_traffic.port
