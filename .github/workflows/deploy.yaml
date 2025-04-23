@@ -44,21 +44,26 @@ jobs:
         run: |
           echo "mirror_lb_ip=$(terraform output -raw lb_static_ip)" >> "$GITHUB_OUTPUT"
 
-      - name: VM Health Check post deployment
+      - name: Mirror Server Health Check post deployment
         env:
           MIRROR_LB_IP: ${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}
         run: |
           echo "Waiting for VM to boot and complete startup scripts..."
-          for i in {1..10}; do
-            if curl --fail http://${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}/health; then
-              echo "VM is healthy!"
+          MAX_SERVER_DISCOVERY_RETRY=120  # Wait up to 10 minutes (60 * 5s)
+          SERVER_DISCOVERY_RETRY=0
+          SLEEP_TIME=5
+          while true; do
+            if curl --fail -v http://${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}/health; then
+              echo "Server is healthy!"
               exit 0
-            else
-              echo "Attempt $i: VM Not healthy yet, retrying in 30s..."
-              sleep 30
             fi
+            SERVER_DISCOVERY_RETRY=$((SERVER_DISCOVERY_RETRY + 1))
+            if [ $CONTAINER_DISCOVERY_RETRY -ge $MAX_SERVER_DISCOVERY_RETRY ]; then
+              echo "[ERROR] Timed out waiting for Server to become healthy."
+              exit 1
+            fi
+            echo "Attempt $SERVER_DISCOVERY_RETRY: Server Not healthy yet, retrying in 5s..."
+            sleep $SLEEP_TIME
           done
-          echo "VM failed to become healthy in time."
-          exit 1
           
         
