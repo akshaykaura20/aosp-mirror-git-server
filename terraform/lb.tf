@@ -51,15 +51,19 @@ resource "google_compute_global_forwarding_rule" "mirror_http_forwarding_rule" {
 # Forwards traffic data to the correct URL Map
 resource "google_compute_target_http_proxy" "mirror_http_proxy" {
   name    = "mirror-http-proxy"
-  url_map = google_compute_url_map.mirror_url_map.id
+  url_map = google_compute_url_map.mirror_redirect_http_to_https_url_map.id
 }
 
-# Create a URL Map for Load Balancer
+# Create a URL Map for Load Balancer (HTTPS 443)
 # Routes traffic to correct backend service (path)
 resource "google_compute_url_map" "mirror_url_map" {
   name            = "mirror-url-map"
   default_service = google_compute_backend_service.mirror_lb_backend_service.id
-  
+}
+# Create a URL Map for Load Balancer for redirect of HTTP (80) traffic to HTTPS proxy
+resource "google_compute_url_map" "mirror_redirect_http_to_https_url_map" {
+  name            = "mirror-redirect-http-to-https-url-map"
+
   default_url_redirect {
     https_redirect         = true
     strip_query            = false
