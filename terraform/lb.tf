@@ -13,17 +13,42 @@ resource "google_compute_global_address" "mirror_lb_public_ip" {
   name = "mirror-lb-public-ip"
 }
 
-# Create a Global Forwarding Rule for Load Balancer
-# Routes incoming traffic to the correct target HTTP proxy
-resource "google_compute_global_forwarding_rule" "mirror_forwarding_rule" {
-  name       = "mirror-forwarding-rule"
+# Create a GCP managed SSL certificate to enable https
+resource "google_compute_managed_ssl_certificate" "mirror_lb_ssl_cert" {
+  name = "mirror-lb-ssl-cert"
+  managed {
+    domains = ["mirror.horizon-sdv.com"]
+  }
+}
+
+# Create a Global HTTPS (443) Forwarding Rule for Load Balancer
+# Routes incoming traffic to the correct target HTTPS (443) proxy
+resource "google_compute_global_forwarding_rule" "mirror_https_forwarding_rule" {
+  name       = "mirror-https-forwarding-rule"
+  target     = google_compute_target_https_proxy.mirror_https_proxy.id
+  port_range = local.https_traffic.port
+  ip_address = google_compute_global_address.mirror_lb_public_ip.address
+}
+
+# Create a Target HTTPS (443) Proxy for Load Balancer
+# Decrypts traffic data with SSL certificates and forwards it to the correct URL Map
+resource "google_compute_target_https_proxy" "mirror_https_proxy" {
+  name    = "mirror-https-proxy"
+  url_map = google_compute_url_map.mirror_url_map.id
+  ssl_certificates = [google_compute_managed_ssl_certificate.mirror_lb_ssl_cert.id]
+}
+
+# Create a Global HTTP (80) Forwarding Rule for Load Balancer
+# Routes incoming traffic to the correct target HTTP (80) proxy
+resource "google_compute_global_forwarding_rule" "mirror_http_forwarding_rule" {
+  name       = "mirror-http-forwarding-rule"
   target     = google_compute_target_http_proxy.mirror_http_proxy.id
   port_range = local.http_traffic.port
   ip_address = google_compute_global_address.mirror_lb_public_ip.address
 }
 
-# Create a Target HTTP Proxy for Load Balancer
-# Decrypts traffic data with SSL certificates and forwards it to the correct URL Map
+# Create a Target HTTP (80) Proxy for Load Balancer
+# Forwards traffic data to the correct URL Map
 resource "google_compute_target_http_proxy" "mirror_http_proxy" {
   name    = "mirror-http-proxy"
   url_map = google_compute_url_map.mirror_url_map.id
@@ -34,12 +59,18 @@ resource "google_compute_target_http_proxy" "mirror_http_proxy" {
 resource "google_compute_url_map" "mirror_url_map" {
   name            = "mirror-url-map"
   default_service = google_compute_backend_service.mirror_lb_backend_service.id
+  
+  default_url_redirect {
+    https_redirect         = true
+    strip_query            = false
+    redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
+  }
 }
 
 # Create a backend service for Load Balancer
 resource "google_compute_backend_service" "mirror_lb_backend_service" {
   name                  = "git-server-backend"
-  protocol              = local.http_traffic.protocol # change it to HTTPS for SSL
+  protocol              = local.http_traffic.protocol
   port_name             = google_compute_instance_group.mirror_lb_instance_group.named_port[0].name
   load_balancing_scheme = "EXTERNAL"
   timeout_sec           = local.backend_service_timeout_sec
