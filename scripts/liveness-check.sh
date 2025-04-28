@@ -7,7 +7,7 @@ MAX_SERVER_DISCOVERY_RETRY=20  # Wait up to 10 minutes (20 * 30s)
 SERVER_DISCOVERY_RETRY=0
 SLEEP_TIME=30
 while true; do
-if curl --fail -v https://${MIRROR_LB_IP}/healthcheck; then
+if curl --fail -v http://${MIRROR_LB_IP}/healthcheck; then
     echo "Server is healthy!"
     exit 0
 fi
