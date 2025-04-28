@@ -25,7 +25,7 @@ jobs:
         with:
           token_format: access_token
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
-          service_account: ${{ env.GCP_SA_EMAIL }}
+          service_account: ${{ vars.GCP_SA_EMAIL }}
 
       # Install TF on runner
       - name: Set up Terraform
