@@ -14,9 +14,9 @@ locals {
 
   health_check = {
     path                 = "/healthcheck"
-    check_interval_sec   = 30
-    timeout_sec          = 10
-    healthy_threshold    = 2
-    unhealthy_threshold  = 14 # scripts take time to finish
-  }
+    check_interval_sec   = 40 # check every 40s
+    timeout_sec          = 10 # wait for 10s for response
+    healthy_threshold    = 3  # declare healthy after
+    unhealthy_threshold  = 10 # max retries
+  } # total time = (40 + 10) * 10 = 500s
 }
