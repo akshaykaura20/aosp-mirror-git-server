@@ -56,26 +56,8 @@ jobs:
         run: |
           echo "mirror_lb_ip=$(terraform output -raw lb_static_ip)" >> "$GITHUB_OUTPUT"
 
-      - name: Mirror Server Health Check post deployment
+      - name: Mirror Liveness Check post deployment
+        working-directory: ./scripts
         env:
           MIRROR_LB_IP: ${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}
-        run: |
-          echo "Waiting for VM to boot and complete startup scripts..."
-          MAX_SERVER_DISCOVERY_RETRY=20  # Wait up to 10 minutes (20 * 30s)
-          SERVER_DISCOVERY_RETRY=0
-          SLEEP_TIME=30
-          while true; do
-            if curl --fail -v http://${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}/healthcheck; then
-              echo "Server is healthy!"
-              exit 0
-            fi
-            SERVER_DISCOVERY_RETRY=$((SERVER_DISCOVERY_RETRY + 1))
-            if [ $CONTAINER_DISCOVERY_RETRY -ge $MAX_SERVER_DISCOVERY_RETRY ]; then
-              echo "[ERROR] Timed out waiting for Server to become healthy."
-              exit 1
-            fi
-            echo "Attempt $SERVER_DISCOVERY_RETRY: Server Not healthy yet, retrying in 5s..."
-            sleep $SLEEP_TIME
-          done
-          
-        
+        run: bash liveness-check.sh
