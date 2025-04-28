@@ -3,6 +3,10 @@ name: Deploy AOSP Mirror Git Server to GCP
 on:
   workflow_dispatch: # Manual trigger
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   terraform:
     runs-on: ubuntu-latest # github's runner
