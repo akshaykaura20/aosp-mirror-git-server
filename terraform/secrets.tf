@@ -1,3 +1,10 @@
+# Enable Secret Manager API
+resource "google_project_service" "secretmanager" {
+  project = var.project_id
+  service = "secretmanager.googleapis.com"
+  disable_on_destroy = false
+}
+
 resource "google_secret_manager_secret" "gh_repo_pat_secret" {
   secret_id = "GH_REPO_PAT"
   replication {
