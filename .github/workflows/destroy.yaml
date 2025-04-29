@@ -1,0 +1,55 @@
+name: "[CAUTION] Destroy AOSP Mirror Git Server from GCP"
+
+on:
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest # github's runner
+    env:
+      TF_VAR_backend_bucket_name: ${{ vars.GCP_BUCKET_NAME }}
+      TF_VAR_project_id: ${{ vars.GCP_PROJECT_ID }}
+      TF_VAR_region: ${{ vars.GCP_REGION }}
+    steps:
+      # Get the terraform code from this repo onto the runner
+      - name: Checkout repo 
+        uses: actions/checkout@v3
+      
+      # Auth this WF with GCP
+      - name: Authenticate to GCP using WIF
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_SA_EMAIL }}
+
+      # Install TF on runner
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.6
+      
+      # Initialise TF with remote backend
+      - name: Terraform init
+        working-directory: ./terraform
+        run: terraform init -backend-config="bucket=${{vars.GCP_BUCKET_NAME }}"
+
+      - name: Terraform plan (DESTROY)
+        working-directory: ./terraform
+        run: terraform plan -destroy -out=tfdestroyplan
+      
+      - name: Confirm Destruction
+        run: |
+          echo "Confirming infra destruction for AOSP Mirro Git Server. Proceeding in 5 seconds..."
+          sleep 5
+      
+      - name: Terraform apply (DESTROY CONFIRMED!)
+        id: terraform_apply
+        working-directory: ./terraform
+        run: |
+          terraform apply -destroy -auto-approve tfdestroyplan
