@@ -7,7 +7,7 @@ HEALTH_CHECK_RETRY=0
 SLEEP_TIME=30
 echo "Load Balancer backend service name: $MIRROR_LB_BACKEND_SERVICE_NAME"
 while true; do
-    HEALTH_STATUS=$(gcloud compute backend-services get-health $MIRROR_LB_BACKEND_SERVICE_NAME --global --format='value(healthStatus.healthState)')
+    HEALTH_STATUS=$(gcloud compute backend-services get-health $MIRROR_LB_BACKEND_SERVICE_NAME --global --format='value(healthStatus.healthState)' 2>&1)
 
     if [[ "$HEALTH_STATUS" == "HEALTHY" ]]; then
         echo "Load Balancer backend is $HEALTH_STATUS."
@@ -19,6 +19,6 @@ while true; do
         exit 1
     fi
     echo "[ERROR] Load Balancer backend is NOT HEALTHY. Status: $HEALTH_STATUS"
-    echo "[ERROR] Attempt $HEALTH_CHECK_RETRY of $MAX_HEALTH_CHECK_RETRY: Retrying in ${SLEEP_TIME}s..."
+    echo "Attempt $HEALTH_CHECK_RETRY of $MAX_HEALTH_CHECK_RETRY: Retrying in ${SLEEP_TIME}s..."
     sleep $SLEEP_TIME
 done
