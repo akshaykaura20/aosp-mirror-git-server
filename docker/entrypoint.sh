@@ -3,7 +3,7 @@
 set -euo pipefail
 
 CONTAINER_MIRROR_MOUNT_PATH="/usr/local/apache2/htdocs"
-CONTAINER_MIRROR_SCRIPT_MOUNT_PATH="/opt/internal/scripts/"
+CONTAINER_MIRROR_SCRIPT_MOUNT_PATH="/opt/internal/scripts"
 
 # Create /healthcheck path for apache container healthchecks
 echo "healthy" > "$CONTAINER_MIRROR_MOUNT_PATH/healthcheck"
