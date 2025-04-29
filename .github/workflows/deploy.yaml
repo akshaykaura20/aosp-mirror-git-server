@@ -49,7 +49,10 @@ jobs:
       - name: Terraform apply
         id: terraform_apply
         working-directory: ./terraform
-        run: terraform apply -auto-approve tfplan
+        run: |
+          terraform apply -auto-approve tfplan
+          echo "lb_backend_service_name=$(terraform output -raw lb_backend_service_name)">> "$GITHUB_OUTPUT"
+          echo "lb_static_ip=$(terraform output -raw lb_static_ip)">> "$GITHUB_OUTPUT"
       
       - name: Mirror LB Backend Service Health Check
         working-directory: ./scripts
