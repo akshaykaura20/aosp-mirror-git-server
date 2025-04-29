@@ -174,6 +174,11 @@ EOF
 # note that we mount two separate directories from container onto host- for mirror, and for mirror script
 chmod 600 "$DOCKER_DIR_PATH/.env"
 
+# Copy AOSP mirror script to PD making it accessible to container
+mkdir -p $MIRROR_SCRIPT_PATH_INSIDE_DISK
+echo "[INFO] Copying AOSP Mirror shell script to directory '$MIRROR_SCRIPT_PATH_INSIDE_DISK' inside PD..."
+cp -u $REPO_CLONE_PATH/scripts/mirror-aosp.sh $MIRROR_SCRIPT_PATH_INSIDE_DISK
+
 ##########################################
 # START DOCKER COMPOSE GIT SERVER STACK
 ##########################################
@@ -209,11 +214,6 @@ done
 ##########################################
 # START AOSP MIRROR SCRIPT IN CONTAINER
 ##########################################
-# Copy AOSP mirror script to PD making it accessible to container
-mkdir -p $MIRROR_SCRIPT_PATH_INSIDE_DISK
-echo "[INFO] Copying AOSP Mirror shell script to directory '$MIRROR_SCRIPT_PATH_INSIDE_DISK' inside PD..."
-cp -u $REPO_CLONE_PATH/scripts/mirror-aosp.sh $MIRROR_SCRIPT_PATH_INSIDE_DISK
-
 echo "[INFO] Running AOSP mirror script inside container..."
 CONTAINER_MIRROR_SCRIPT_MOUNT_PATH="/opt/internal/scripts"
 # note that the host's (or PD's) path: MIRROR_SCRIPT_PATH_INSIDE_DISK maps the container's CONTAINER_MIRROR_SCRIPT_MOUNT_PATH
