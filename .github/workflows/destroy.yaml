@@ -39,6 +39,9 @@ jobs:
         working-directory: ./terraform
         run: terraform init -backend-config="bucket=${{vars.GCP_BUCKET_NAME }}"
 
+      - name: Attempt to Unlock Terraform State (TEMPORARY)
+        run: terraform force-unlock -force 1745914012277069
+
       - name: Terraform plan (DESTROY)
         working-directory: ./terraform
         run: terraform plan -destroy -out=tfdestroyplan
@@ -52,4 +55,4 @@ jobs:
         id: terraform_apply
         working-directory: ./terraform
         run: |
-          terraform apply -destroy -auto-approve tfdestroyplan
+          terraform apply -auto-approve tfdestroyplan
