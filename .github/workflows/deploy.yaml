@@ -47,17 +47,20 @@ jobs:
         run: terraform plan -out=tfplan
       
       - name: Terraform apply
+        id: terraform_apply
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
 
-      - name: Get Mirror LB external IP
-        id: get_mirror_lb_ip
+      - name: Get Terraform Outputs
         working-directory: ./terraform
         run: |
-          echo "mirror_lb_ip=$(terraform output -raw lb_static_ip)" >> "$GITHUB_OUTPUT"
-
-      - name: Mirror Liveness Check post deployment
+          echo "BACKEND_SERVICE_NAME=${{ steps.terraform_apply.outputs.lb_backend_service_name }}" >> $GITHUB_ENV
+          echo "MIRROR_LB_IP=${{ steps.terraform_apply.outputs.lb_static_ip }}" >> $GITHUB_ENV
+      
+      - name: Mirror LB Backend Service Health Check
         working-directory: ./scripts
-        env:
-          MIRROR_LB_IP: ${{ steps.get_mirror_lb_ip.outputs.mirror_lb_ip }}
+        run: bash lb-backend-health-check.sh
+
+      - name: Mirror Liveness Check
+        working-directory: ./scripts
         run: bash liveness-check.sh
