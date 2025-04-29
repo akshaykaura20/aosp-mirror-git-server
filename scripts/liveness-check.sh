@@ -16,6 +16,6 @@ while true; do
         echo "[ERROR] Timed out waiting for Server to become healthy."
         exit 1
     fi
-    echo "Attempt $SERVER_DISCOVERY_RETRY: Server Not healthy yet, retrying in ${SLEEP_TIME}s..."
+    echo "Attempt $SERVER_DISCOVERY_RETRY of $MAX_SERVER_DISCOVERY_RETRY: Server Not healthy yet, retrying in ${SLEEP_TIME}s..."
     sleep $SLEEP_TIME
 done

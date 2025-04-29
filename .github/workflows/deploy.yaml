@@ -57,7 +57,7 @@ jobs:
       - name: Mirror LB Backend Service Health Check
         working-directory: ./scripts
         env:
-          BACKEND_SERVICE_NAME: ${{ steps.terraform_apply.outputs.lb_backend_service_name }}
+          MIRROR_LB_BACKEND_SERVICE_NAME: ${{ steps.terraform_apply.outputs.lb_backend_service_name }}
         run: bash lb-backend-health-check.sh
 
       - name: Mirror Liveness Check
