@@ -40,6 +40,7 @@ jobs:
         run: terraform init -backend-config="bucket=${{vars.GCP_BUCKET_NAME }}"
 
       - name: Attempt to Unlock Terraform State (TEMPORARY)
+        continue-on-error: true
         run: terraform force-unlock -force 1745914012277069
 
       - name: Terraform plan (DESTROY)
