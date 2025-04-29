@@ -221,5 +221,5 @@ CONTAINER_MIRROR_SCRIPT_MOUNT_PATH="/opt/internal/scripts"
 docker exec -d "$GIT_SERVER_CONTAINER_NAME" bash -c "$CONTAINER_MIRROR_SCRIPT_MOUNT_PATH/mirror-aosp.sh > $CONTAINER_MIRROR_SCRIPT_MOUNT_PATH/mirror-aosp.log 2>&1 &"
 echo "[INFO] Mirror script triggered."
 
-echo "[DONE] Startup Completed!"
+echo "[DONE] Mirror startup Completed!"
 
