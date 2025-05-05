@@ -18,7 +18,7 @@ resource "google_project_iam_member" "allow_vm_sa_secret_access" {
 resource "google_compute_instance" "mirror_vm" {
   name                      = "mirror-git-server"
   machine_type              = "n1-standard-16" # 16 vCPUs, 60GB RAM
-  zone                      = "${var.region}-a"
+  zone                      = local.zone
   allow_stopping_for_update = true
 
   boot_disk {

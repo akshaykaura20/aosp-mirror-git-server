@@ -1,7 +1,11 @@
 resource "google_secret_manager_secret" "gh_repo_pat_secret" {
   secret_id = "GH_REPO_PAT"
   replication {
-    auto {}
+    user_managed {
+      replicas {
+        location = var.region
+      }
+    }
   }
 }
 
@@ -13,7 +17,11 @@ resource "google_secret_manager_secret_version" "gh_repo_pat_secret_version" {
 resource "google_secret_manager_secret" "mirror_git_server_password_secret" {
   secret_id = "GIT_SERVER_PASSWORD"
   replication {
-    auto {}
+    user_managed {
+      replicas {
+        location = var.region
+      }
+    }
   }
 }
 

@@ -1,4 +1,5 @@
 locals {
+  zone = "${var.region}-b"
   http_traffic = {
     protocol  = "HTTP"
     port      = "80"

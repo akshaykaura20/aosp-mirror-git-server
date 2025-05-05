@@ -106,7 +106,7 @@ resource "google_compute_health_check" "default" {
 # LB's backend-service will route requests to this group
 resource "google_compute_instance_group" "mirror_lb_instance_group" {
   name        = "mirror-lb-instance-group"
-  zone        = "${var.region}-a"
+  zone        = local.zone
   description = "Instance Group for Git Mirror VM"
   instances   = [google_compute_instance.mirror_vm.self_link]
 
