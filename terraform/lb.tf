@@ -17,7 +17,7 @@ resource "google_compute_global_address" "mirror_lb_public_ip" {
 resource "google_compute_managed_ssl_certificate" "mirror_lb_ssl_cert" {
   name = "mirror-lb-ssl-cert"
   managed {
-    domains = ["mirror.horizon-sdv.com"]
+    domains = [local.mirror_domain]
   }
 }
 
