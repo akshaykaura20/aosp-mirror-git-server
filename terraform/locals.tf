@@ -10,7 +10,7 @@ locals {
     port_name = "https-port"
   }
 
-  backend_service_timeout_sec = 30
+  backend_service_timeout_sec = 3000
 
   health_check = {
     path                 = "/healthcheck"
