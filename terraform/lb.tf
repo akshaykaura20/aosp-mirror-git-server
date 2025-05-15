@@ -83,6 +83,11 @@ resource "google_compute_backend_service" "mirror_lb_backend_service" {
   backend {
     group = google_compute_instance_group.mirror_lb_instance_group.self_link # Points to the VM
   }
+
+  depends_on = [
+    google_compute_instance_group.mirror_lb_instance_group,
+    google_compute_health_check.default
+  ]
 }
 # Create a Health Check for Load Balancer (HTTP)
 # Checks if the VM is healthy and can accept traffic
