@@ -10,6 +10,7 @@ permissions:
 jobs:
   terraform:
     runs-on: ubuntu-latest # github's runner
+    environment: prod # this wf runs on prod env for branches starting with `prod`
     env:
       TF_VAR_backend_bucket_name: ${{ vars.GCP_BUCKET_NAME }}
       TF_VAR_project_id: ${{ vars.GCP_PROJECT_ID }}
