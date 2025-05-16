@@ -34,3 +34,9 @@ variable "mirror_git_server_password" {
   sensitive   = true
   default     = ""
 }
+
+variable "mirror_sub_domain_name" {
+  description = "Subdomain for mirror. E.g. Full domain will be my_sub_domain_name.horizon-sdv.com"
+  type        = string
+  default     = "mirror"
+}

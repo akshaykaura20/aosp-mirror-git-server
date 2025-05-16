@@ -1,6 +1,6 @@
 locals {
   zone = "${var.region}-b"
-  mirror_domain = "prod-mirror.horizon-sdv.com"
+  mirror_domain = "${var.mirror_sub_domain_name}.horizon-sdv.com"
   http_traffic = {
     protocol  = "HTTP"
     port      = "80"

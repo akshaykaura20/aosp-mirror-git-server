@@ -18,6 +18,7 @@ jobs:
       TF_VAR_gh_repo: "github.com/${{ github.repository }}.git"
       TF_VAR_gh_repo_pat: ${{ secrets.GH_REPO_PAT }}
       TF_VAR_mirror_git_server_password: ${{ secrets.GIT_SERVER_PASSWORD }}
+      TF_VAR_mirror_sub_domain_name: ${{ vars.SUB_DOMAIN_NAME }}
     steps:
       # Get the terraform code from this repo onto the runner
       - name: Checkout repo 
