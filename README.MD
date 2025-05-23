@@ -1,4 +1,6 @@
-This repo contains all the files needed to deploy a containerized **Apache Git HTTP server** from scratch on a Linux host machine on GCP- using **Terraform** code via **GitHub Actions** workflow. As a one-time setup, the server downloads the AOSP mirror from *android.googlesource.com* and then serves Git requests for repo sync for AAOS builds.
+### Self-hosted AOSP Mirror Git Server to speed up AAOS repo sync by atleast 50 percent.
+---
+This repo contains all the files needed to deploy a containerized **Apache Git HTTP server** from scratch on a Linux host machine (on GCP)- using **Terraform** via **GitHub Actions** workflow. As a one-time setup, the server downloads the AOSP mirror from *android.googlesource.com* and then serves Git requests for repo sync for AAOS builds. This project's main aim is to avoid using the rate-limited *android.googlesource.com* for repo sync requests, and instead speed it up by using a self-hosted AOSP mirror thereby saving time.
 
 ## Steps to deploy Git server:
 
@@ -24,7 +26,7 @@ The Terraform workflow via GitHub Actions authenticates to your GCP project usin
      -   "attribute.repository" = "assertion.repository"
 	 -   Click on ADD CONDITION under Attribute Conditions.
 	 -   Configure Attribute Conditions as below
-	     -   Condition CEL = `assertion.repository=='akshay-kaura/sdv-mirror-git-server'`
+	     -   Condition CEL = `assertion.repository=='akshaykaura20/aosp-mirror-git-server'`
 	 -   Click save.
 5. Workload Identity Federation Pool and Provider has now been created successfully.
 #### 1b. Create Service Account
@@ -46,7 +48,7 @@ This service account will be bind to the WIF provider we added earlier. Hence, w
 2.  Click on the name of the Workload Identity pool with Display Name as "github-for-aosp-mirror" from the list.
 3.  Click on GRANT ACCESS and select  **Grant access using Service Account impersonation**.
 4.  Select  `github-sa-for-aosp-mirror`  as the Service Account under Select service account.
-5.  Select Attribute name as  `repository`  and attribute value as  `akshay-kaura/sdv-mirror-git-server`  (or your own repo name where Actions workflow will be executed) under Select principals (identities that can access the service account) and click on SAVE.
+5.  Select Attribute name as  `repository`  and attribute value as  `akshaykaura20/aosp-mirror-git-server`  (or your own repo name where Actions workflow will be executed) under Select principals (identities that can access the service account) and click on SAVE.
 6.  In the next window, select Provider as  `github-provider-for-aosp-mirror`  from the drop-down menu and set OIDC ID token path as  `https://token.actions.githubusercontent.com`.
 7.  Download the config file and and click on DISMISS.
 8.  Confirm the Service account has been bound successfully under CONNECTED SERVICE ACCOUNTS tab.
