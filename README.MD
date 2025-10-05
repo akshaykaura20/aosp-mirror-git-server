@@ -1,4 +1,4 @@
-### Self-hosted AOSP Mirror Git Server to speed up AAOS repo sync by atleast 50 percent.
+### AOSP Mirror Git Server to speed up AAOS repo sync by atleast 50 percent.
 ---
 This repo contains all the files needed to deploy a containerized **Apache Git HTTP server** from scratch on a Linux host machine (on GCP)- using **Terraform** via **GitHub Actions** workflow. As a one-time setup, the server downloads the AOSP mirror from *android.googlesource.com* and then serves Git requests for repo sync for AAOS builds. This project's main aim is to avoid using the rate-limited *android.googlesource.com* for repo sync requests, and instead speed it up by using a self-hosted AOSP mirror thereby saving time.
 
